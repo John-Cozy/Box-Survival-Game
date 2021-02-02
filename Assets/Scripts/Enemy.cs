@@ -20,6 +20,13 @@ public class Enemy : MonoBehaviour {
         transform.position = Vector3.MoveTowards(transform.position, PlayerPosition.position, step);
     }
 
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Bullet")) {
+            Destroy(gameObject);
+            Destroy(collision.gameObject);
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.CompareTag("Player")) {
             Destroy(gameObject);
