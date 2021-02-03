@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour {
-    
+
     public float MoveSpeed = 0.01f;
     public int MaxHealth = 3;
     public SpriteRenderer SpriteRenderer;
@@ -11,14 +11,12 @@ public class Player : MonoBehaviour {
     private int currentHealth;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         currentHealth = MaxHealth;
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         Vector2 move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * MoveSpeed;
         transform.Translate(move);
     }
@@ -27,9 +25,10 @@ public class Player : MonoBehaviour {
         if (collision.gameObject.CompareTag("Enemy")) {
             currentHealth--;
 
-            SpriteRenderer.color = Color.Lerp(Color.red, Color.white, (float) currentHealth / MaxHealth);
+            SpriteRenderer.color = Color.Lerp(Color.red, Color.white, (float)currentHealth / MaxHealth);
 
             if (currentHealth < 1) {
+                Director.PlayerDied();
                 Destroy(this);
             }
         }

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Tutorial : MonoBehaviour
-{
+public class Tutorial : MonoBehaviour {
     public CanvasGroup Group;
     public Text W;
     public Text A;
@@ -15,24 +14,22 @@ public class Tutorial : MonoBehaviour
     private bool wClicked, aClicked, sClicked, dClicked, clickClicked;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        
+    void Start() {
+
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         if (Input.GetKeyDown(KeyCode.W)) {
             ChangeColour(W);
             wClicked = true;
         } else if (Input.GetKeyDown(KeyCode.A)) {
             ChangeColour(A);
             aClicked = true;
-        } else if(Input.GetKeyDown(KeyCode.S)) {
+        } else if (Input.GetKeyDown(KeyCode.S)) {
             ChangeColour(S);
             sClicked = true;
-        } else if(Input.GetKeyDown(KeyCode.D)) {
+        } else if (Input.GetKeyDown(KeyCode.D)) {
             ChangeColour(D);
             dClicked = true;
         } else if (Input.GetMouseButtonDown(0)) {
@@ -40,7 +37,7 @@ public class Tutorial : MonoBehaviour
             clickClicked = true;
         }
 
-        if (wClicked && aClicked && sClicked && dClicked && clickClicked) {
+        if ((wClicked && aClicked && sClicked && dClicked && clickClicked) || Director.IsGameOver()) {
             Group.alpha -= 0.002f;
 
             if (Group.alpha == 1) {
