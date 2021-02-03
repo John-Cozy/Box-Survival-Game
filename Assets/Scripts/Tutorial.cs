@@ -37,12 +37,13 @@ public class Tutorial : MonoBehaviour {
             clickClicked = true;
         }
 
-        if ((wClicked && aClicked && sClicked && dClicked && clickClicked) || Director.IsGameOver()) {
+        if ((wClicked && aClicked && sClicked && dClicked && clickClicked)) {
             Group.alpha -= 0.002f;
 
             if (Group.alpha == 1) {
                 HideTutorial();
             } else if (Group.alpha <= 0) {
+                Director.StartSpawning();
                 Destroy(gameObject);
             }
         }

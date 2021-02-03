@@ -7,6 +7,7 @@ public class Player : MonoBehaviour {
     public float MoveSpeed = 0.01f;
     public int MaxHealth = 3;
     public SpriteRenderer SpriteRenderer;
+    public bool IsDead = false;
 
     private int currentHealth;
 
@@ -17,8 +18,16 @@ public class Player : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        Vector2 move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * MoveSpeed;
-        transform.Translate(move);
+        if (!IsDead) {
+            Vector2 move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * MoveSpeed;
+            transform.Translate(move);
+        }
+    }
+
+    public void ResetPlayer() {
+        IsDead = false;
+        currentHealth = MaxHealth;
+        SpriteRenderer.color = Color.white;
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
@@ -29,7 +38,7 @@ public class Player : MonoBehaviour {
 
             if (currentHealth < 1) {
                 Director.PlayerDied();
-                Destroy(this);
+                IsDead = true;
             }
         }
     }

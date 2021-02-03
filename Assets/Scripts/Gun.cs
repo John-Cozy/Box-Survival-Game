@@ -5,10 +5,17 @@ using UnityEngine.UIElements;
 
 public class Gun : MonoBehaviour {
     public GameObject BulletPrefab;
+    public float FireRate;
+
+    private float fireTime = 0.0f;
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetMouseButtonDown(0) && !Director.IsGameOver()) {
+        fireTime += Time.deltaTime;
+
+        if (Input.GetMouseButton(0) && !Director.IsGameOver() && fireTime > FireRate) {
+            fireTime = 0.0f;
+
             Instantiate(BulletPrefab, transform.position, Quaternion.identity);
         }
     }
