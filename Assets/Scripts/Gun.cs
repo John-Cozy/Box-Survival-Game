@@ -16,6 +16,7 @@ public class Gun : MonoBehaviour {
         if (Input.GetMouseButton(0) && !Director.IsGameOver() && fireTime > FireRate) {
             fireTime = 0.0f;
 
+            AudioManager.Play("Fire");
             Instantiate(BulletPrefab, transform.position, Quaternion.identity);
         }
     }

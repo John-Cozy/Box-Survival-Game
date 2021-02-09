@@ -145,4 +145,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveSpeed: 2
-  PlayerPosition: {fileID: 0}
+  MaxHealth: 1
+  ScoreValue: 10

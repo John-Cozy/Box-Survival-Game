@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour {
 
-    public float MoveSpeed = 0.1f;
-    public int MaxHealth = 1;
-    public int ScoreValue = 10;
-    public Transform PlayerPosition;
+    public float MoveSpeed  = 0.1f;
+    public int MaxHealth    = 1;
+    public int ScoreValue   = 10;
 
+    private Transform PlayerPosition;
     private int currentHealth;
 
     // Start is called before the first frame update
@@ -18,7 +18,7 @@ public class Enemy : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
+    void FixedUpdate() {
         float step = MoveSpeed * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, PlayerPosition.position, step);
     }
@@ -27,10 +27,14 @@ public class Enemy : MonoBehaviour {
         if (collision.gameObject.CompareTag("Bullet")) {
             currentHealth--;
 
+            Destroy(collision.gameObject);
+
             if (currentHealth < 1) {
+                AudioManager.Play("EnemyKilled");
                 Director.AddToScore(ScoreValue);
                 Destroy(gameObject);
-                Destroy(collision.gameObject);
+            } else {
+                AudioManager.Play("EnemyHit");
             }
         }
     }

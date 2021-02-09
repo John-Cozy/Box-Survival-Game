@@ -9,9 +9,10 @@ public class Tutorial : MonoBehaviour {
     public Text A;
     public Text S;
     public Text D;
-    public Text Click;
+    public Text G;
+    public Text LeftClick;
 
-    private bool wClicked, aClicked, sClicked, dClicked, clickClicked;
+    private bool w, a, s, d, lClick, g;
 
     // Start is called before the first frame update
     void Start() {
@@ -22,23 +23,33 @@ public class Tutorial : MonoBehaviour {
     void Update() {
         if (Input.GetKeyDown(KeyCode.W)) {
             ChangeColour(W);
-            wClicked = true;
-        } else if (Input.GetKeyDown(KeyCode.A)) {
+            w = true;
+        } 
+        if (Input.GetKeyDown(KeyCode.A)) {
             ChangeColour(A);
-            aClicked = true;
-        } else if (Input.GetKeyDown(KeyCode.S)) {
+            a = true;
+        } 
+        if (Input.GetKeyDown(KeyCode.S)) {
             ChangeColour(S);
-            sClicked = true;
-        } else if (Input.GetKeyDown(KeyCode.D)) {
+            s = true;
+        } 
+        if (Input.GetKeyDown(KeyCode.D)) {
             ChangeColour(D);
-            dClicked = true;
-        } else if (Input.GetMouseButtonDown(0)) {
-            ChangeColour(Click);
-            clickClicked = true;
+            d = true;
         }
+        if (Input.GetKeyDown(KeyCode.G)) {
+            ChangeColour(G);
+            g = true;
+        }
+        if (Input.GetMouseButtonDown(0)) {
+            ChangeColour(LeftClick);
+            lClick = true;
+        }
+    }
 
-        if ((wClicked && aClicked && sClicked && dClicked && clickClicked)) {
-            Group.alpha -= 0.002f;
+    private void FixedUpdate() {
+        if (w && a && s && d && lClick && g) {
+            Group.alpha -= 0.05f;
 
             if (Group.alpha == 1) {
                 HideTutorial();
