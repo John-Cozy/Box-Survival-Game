@@ -12,54 +12,56 @@ public class Tutorial : MonoBehaviour {
     public Text G;
     public Text LeftClick;
 
-    private bool w, a, s, d, lClick, g;
+    private bool w, a, s, d, lClick, g1, g2;
 
     // Update is called once per frame
     void Update() {
         if (Input.GetKeyDown(KeyCode.W)) {
-            ChangeColour(W);
+            ChangeColour(W, Color.green);
             w = true;
         } 
         if (Input.GetKeyDown(KeyCode.A)) {
-            ChangeColour(A);
+            ChangeColour(A, Color.green);
             a = true;
         } 
         if (Input.GetKeyDown(KeyCode.S)) {
-            ChangeColour(S);
+            ChangeColour(S, Color.green);
             s = true;
         } 
         if (Input.GetKeyDown(KeyCode.D)) {
-            ChangeColour(D);
+            ChangeColour(D, Color.green);
             d = true;
         }
         if (Input.GetKeyDown(KeyCode.G)) {
-            ChangeColour(G);
-            g = true;
+            if (!g1) {
+                ChangeColour(G, Color.red);
+                g1 = true;
+            } else if (g1 && !g2) {
+                ChangeColour(G, Color.green);
+                g2 = true;
+            }
         }
         if (Input.GetMouseButtonDown(0)) {
-            ChangeColour(LeftClick);
+            ChangeColour(LeftClick, Color.green);
             lClick = true;
         }
     }
 
     private void FixedUpdate() {
-        if (w && a && s && d && lClick && g) {
+        if (w && a && s && d && lClick && g2) {
             Group.alpha -= 0.05f;
 
             if (Group.alpha == 1) {
-                HideTutorial();
+                Group.blocksRaycasts = false;
             } else if (Group.alpha <= 0) {
                 Director.StartSpawning();
-                Destroy(gameObject);
             }
         }
     }
 
-    private void ChangeColour(Text text) {
-        text.color = Color.green;
+    private void ChangeColour(Text text, Color colour) {
+        text.color = colour;
     }
 
-    private void HideTutorial() {
-        Group.blocksRaycasts = false;
-    }
+
 }
