@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Director : MonoBehaviour
 {
-    private static Director director;
+    private static Director singleton;
 
     public Spawner EnemySpawner;
     public Tutorial Tutorial;
@@ -18,7 +18,7 @@ public class Director : MonoBehaviour
     private float time = 0.0f;
 
     private void Start() {
-        director = this;
+        singleton = this;
     }
 
     private void Update() {
@@ -74,23 +74,23 @@ public class Director : MonoBehaviour
     // Static methods
 
     public static Director GetDirector() {
-        return director;
+        return singleton;
     }
 
     public static void AddToScore(int scoreToAdd) {
-        director.PlayerScore += scoreToAdd;
-        director.UpdateScore();
+        singleton.PlayerScore += scoreToAdd;
+        singleton.UpdateScore();
     }
 
     public static void PlayerDied() {
-        director.EndGame();
+        singleton.EndGame();
     }
 
     public static bool IsGameOver() {
-        return director.GameOver;
+        return singleton.GameOver;
     }
 
     public static void StartSpawning() {
-        director.EnemySpawner.IsSpawning = true;
+        singleton.EnemySpawner.IsSpawning = true;
     }
 }
