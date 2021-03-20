@@ -8,6 +8,8 @@ public class Enemy : MonoBehaviour {
     public int MaxHealth    = 1;
     public int ScoreValue   = 10;
 
+    public GameObject ExplosionPrefab;
+
     private Transform PlayerPosition;
     private int currentHealth;
 
@@ -32,6 +34,9 @@ public class Enemy : MonoBehaviour {
             if (currentHealth < 1) {
                 AudioManager.Play("EnemyKilled");
                 Director.AddToScore(ScoreValue);
+                GetComponent<ParticleSystem>().Play();
+                GameObject explosion = Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+                explosion.GetComponent<Explosion>().numOfPoints = ScoreValue;
                 Destroy(gameObject);
             } else {
                 AudioManager.Play("EnemyHit");

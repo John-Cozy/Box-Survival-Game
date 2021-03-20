@@ -15,20 +15,15 @@ public class Director : MonoBehaviour
     public int PlayerScore = 0;
     public bool GameOver = false;
 
-    private float time = 0.0f;
+    public GameObject RoundText;
+
+    private int round = 1;
 
     private void Start() {
         singleton = this;
     }
 
     private void Update() {
-        time += Time.deltaTime;
-
-        if (time >= 1 && !GameOver && EnemySpawner.IsSpawning) {
-            time = 0.0f;
-
-            AddToScore(1);
-        }
 
         if (Input.GetKeyDown(KeyCode.Space) && GameOver) {
             GameObject.Find("Player").GetComponent<Player>().ResetPlayer();
@@ -44,6 +39,8 @@ public class Director : MonoBehaviour
             UpdateScore();
 
             EnemySpawner.ResetSpawner();
+        } else if (Input.GetKey("escape")) {
+            Application.Quit();
         }
     }
 
@@ -51,8 +48,19 @@ public class Director : MonoBehaviour
         Score.text = "Score: " + PlayerScore;
     }
 
-    public void NewGame() {
-        StartSpawning();
+    public void NewRound() {
+        RoundText.GetComponent<Text>().text = "Round " + round;
+        RoundText.GetComponent<CanvasGroup>().alpha = 1;
+        RoundText.GetComponent<CanvasGroup>().blocksRaycasts = true;
+
+        StartCoroutine(HideRoundText());
+    }
+    IEnumerator HideRoundText() {
+        yield return new WaitForSeconds(2);
+
+        RoundText.GetComponent<CanvasGroup>().alpha = 0;
+        RoundText.GetComponent<CanvasGroup>().blocksRaycasts = false;
+        EnemySpawner.NewRound();
     }
 
     public void EndGame() {
@@ -90,7 +98,12 @@ public class Director : MonoBehaviour
         return singleton.GameOver;
     }
 
-    public static void StartSpawning() {
-        singleton.EnemySpawner.IsSpawning = true;
+    public static void RoundFinished() {
+        singleton.round++;
+        singleton.NewRound();
+    }
+
+    public static void NewGame() {
+        singleton.NewRound();
     }
 }
