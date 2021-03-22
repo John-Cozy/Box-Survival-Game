@@ -38,7 +38,10 @@ public class Director : MonoBehaviour
             PlayerScore = 0;
             UpdateScore();
 
+            round = 1;
+
             EnemySpawner.ResetSpawner();
+            NewRound();
         } else if (Input.GetKey("escape")) {
             Application.Quit();
         }
@@ -55,6 +58,7 @@ public class Director : MonoBehaviour
 
         StartCoroutine(HideRoundText());
     }
+
     IEnumerator HideRoundText() {
         yield return new WaitForSeconds(2);
 
@@ -67,7 +71,6 @@ public class Director : MonoBehaviour
         ShowGameOver();
         GameOver = true;
     }
-
 
     private void ShowGameOver() {
         Group.alpha = 1;

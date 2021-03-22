@@ -11,20 +11,25 @@ public class Spawner : MonoBehaviour {
 
     public EnemyType[] EnemyTypes;
 
-    public float SpawnCount;
-    public float SpawnRate;
-    public float RoundLength;
+    public float SpawnCount, SpawnRate, RoundLength;
 
     private bool isSpawning = false;
-
     private float spawnTime = 0.0f;
+    private float enemiesRemaining;
 
     private float totalSpawnWeight;
-
-    private float enemiesToSpawn;
+    
+    private float[] initialWeights;
+    private float initialSpawnRate, initialSpawnCount, initialRoundLength;
 
     public void ResetSpawner() {
+        for (int i = 0; i < EnemyTypes.Length; i++) {
+            EnemyTypes[i].SpawnWeight = initialWeights[i];
+        }
 
+        SpawnRate = initialSpawnRate;
+        SpawnCount = initialSpawnCount;
+        RoundLength = initialRoundLength;
     }
 
     private void CalculateTotalWeight() {
@@ -36,56 +41,71 @@ public class Spawner : MonoBehaviour {
     }
 
     public void NewRound() {
-        int enemyToBoost = Random.Range(1, EnemyTypes.Length);
-        EnemyTypes[enemyToBoost].SpawnWeight += 1;
+
+        // Boosting enemy weights
+        for (int i = 1; i < EnemyTypes.Length; i++) {
+            EnemyTypes[i].SpawnWeight++;
+        }
+
         CalculateTotalWeight();
 
         SpawnCount += 10;
-        enemiesToSpawn = SpawnCount;
+        enemiesRemaining = SpawnCount;
 
         SpawnRate = RoundLength / SpawnCount;
 
         isSpawning = true;
     }
 
-    // Start is called before the first frame update
     void Start() {
         CalculateTotalWeight();
+
+        initialWeights = new float[EnemyTypes.Length];
+
+        for (int i = 0; i < EnemyTypes.Length; i++) {
+            initialWeights[i] = EnemyTypes[i].SpawnWeight;
+        }
+
+        initialSpawnRate = SpawnRate;
+        initialSpawnCount = SpawnCount;
+        initialRoundLength = RoundLength;
     }
 
-    // Update is called once per frame
     void Update() {
-        if (isSpawning) {
-            spawnTime += Time.deltaTime;
+        if (isSpawning && !Director.IsGameOver()) {
+            if (enemiesRemaining > 0) {
+                spawnTime += Time.deltaTime;
 
-            if (spawnTime >= SpawnRate) {
-                spawnTime = 0.0f;
-                
-                Vector2 location = Random.value >= 0.5 ? new Vector2(10, Random.Range(-10, 10)) : new Vector2(-10, Random.Range(-10, 10));
+                if (spawnTime >= SpawnRate) {
+                    spawnTime = 0.0f;
 
-                GameObject enemy = null;
+                    Vector2 location = Random.value >= 0.5 ? new Vector2(10, Random.Range(-10, 10)) : new Vector2(-10, Random.Range(-10, 10));
 
-                float enemyWeightPosition = Random.Range(0, totalSpawnWeight);
-                float currentWeightPosition = 0;
+                    GameObject enemy = null;
 
-                foreach (EnemyType e in EnemyTypes) {
-                    currentWeightPosition += e.SpawnWeight;
-                    
-                    if (currentWeightPosition > enemyWeightPosition) {
-                        enemy = e.EnemyPrefab;
-                        break;
+                    float enemyWeightPosition = Random.Range(0, totalSpawnWeight);
+                    float currentWeightPosition = 0;
+
+                    foreach (EnemyType e in EnemyTypes) {
+                        currentWeightPosition += e.SpawnWeight;
+
+                        if (currentWeightPosition > enemyWeightPosition) {
+                            enemy = e.EnemyPrefab;
+                            break;
+                        }
                     }
+
+                    Instantiate(enemy, location, Quaternion.identity);
+
+                    enemiesRemaining--;
                 }
 
-                Instantiate(enemy, location, Quaternion.identity);
-
-                enemiesToSpawn--;
-            }
-
-            if (enemiesToSpawn <= 0) {
+            } else if (GameObject.FindGameObjectsWithTag("Enemy").Length == 0) {
                 Director.RoundFinished();
                 isSpawning = false;
             }
+        } else if (Director.IsGameOver()) {
+            isSpawning = false;
         }
     }
 

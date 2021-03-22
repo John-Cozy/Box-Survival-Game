@@ -2,44 +2,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour {
-
-    public float MoveSpeed  = 0.1f;
-    public int MaxHealth    = 1;
+public class Enemy : Cube {
     public int ScoreValue   = 10;
 
     public GameObject ExplosionPrefab;
 
     private Transform PlayerPosition;
-    private int currentHealth;
 
     // Start is called before the first frame update
     void Start() {
+        health = MaxHealth;
         PlayerPosition = GameObject.Find("Player").transform;
-        currentHealth = MaxHealth;
     }
 
     // Update is called once per frame
     void FixedUpdate() {
-        float step = MoveSpeed * Time.deltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, PlayerPosition.position, step);
+        transform.position = Vector3.MoveTowards(transform.position, PlayerPosition.position, MoveSpeed * Time.deltaTime);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.CompareTag("Bullet")) {
-            currentHealth--;
+            health--;
 
             Destroy(collision.gameObject);
 
-            if (currentHealth < 1) {
-                AudioManager.Play("EnemyKilled");
+            if (health < 1) {
+                AudioManager.Play(DeadAudio);
                 Director.AddToScore(ScoreValue);
-                GetComponent<ParticleSystem>().Play();
+
                 GameObject explosion = Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
                 explosion.GetComponent<Explosion>().numOfPoints = ScoreValue;
                 Destroy(gameObject);
             } else {
-                AudioManager.Play("EnemyHit");
+                AudioManager.Play(HitAudio);
+                UpdateHealth();
             }
         }
     }
