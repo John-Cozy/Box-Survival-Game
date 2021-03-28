@@ -116,6 +116,10 @@ PrefabInstance:
       value: 0.4528302
       objectReference: {fileID: 0}
     - target: {fileID: 3171069606897399963, guid: ad6606cf51852bf4088cda1a360bb306, type: 3}
+      propertyPath: PickupChance
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3171069606897399963, guid: ad6606cf51852bf4088cda1a360bb306, type: 3}
       propertyPath: InitialColour.a
       value: 1
       objectReference: {fileID: 0}

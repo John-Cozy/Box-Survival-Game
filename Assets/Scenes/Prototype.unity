@@ -615,9 +615,9 @@ MonoBehaviour:
   - EnemyPrefab: {fileID: 3171069606897399952, guid: ad6606cf51852bf4088cda1a360bb306, type: 3}
     SpawnWeight: 10
   - EnemyPrefab: {fileID: 2899941744192239313, guid: 2649f8233233d3f4b9cdace69f8c095f, type: 3}
-    SpawnWeight: 1
+    SpawnWeight: 0
   - EnemyPrefab: {fileID: 1785008349485684769, guid: 8d49ab17f49f6dc45bd2f0c636b1873f, type: 3}
-    SpawnWeight: 1
+    SpawnWeight: 0
   SpawnCount: 10
   SpawnRate: 1
   RoundLength: 20
@@ -675,10 +675,20 @@ MonoBehaviour:
     Volume: 0.09
     Pitch: 1.05
     Source: {fileID: 0}
-  - Name: EnemyKilled
+  - Name: EnemyKilledBase
     Clip: {fileID: 8300000, guid: 43fdd43e315a0504487ff981ebd95753, type: 3}
     Volume: 0.09
     Pitch: 1.55
+    Source: {fileID: 0}
+  - Name: EnemyKilledFast
+    Clip: {fileID: 8300000, guid: 43fdd43e315a0504487ff981ebd95753, type: 3}
+    Volume: 0.09
+    Pitch: 2.26
+    Source: {fileID: 0}
+  - Name: EnemyKilledSlow
+    Clip: {fileID: 8300000, guid: 43fdd43e315a0504487ff981ebd95753, type: 3}
+    Volume: 0.09
+    Pitch: 0.8
     Source: {fileID: 0}
   - Name: EnemyHit
     Clip: {fileID: 8300000, guid: bcdde7a9504e207439162ce4683322de, type: 3}
@@ -1134,9 +1144,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67f6be00304e85c45a34a11f4427dae1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 0.2
-  Health: 3
   SpriteRenderer: {fileID: 971853256}
+  MoveSpeed: 0.2
+  MaxHealth: 3
+  InitialColour: {r: 1, g: 1, b: 1, a: 1}
+  DeadColour: {r: 0.5471698, g: 0, b: 0, a: 1}
+  HitAudio: PlayerHit
+  DeadAudio: PlayerHit
+  Gun: {fileID: 925653982}
   IsDead: 0
 --- !u!1 &1090975348
 GameObject:

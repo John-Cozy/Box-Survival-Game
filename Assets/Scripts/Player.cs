@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player : Cube {
 
+    public Gun Gun;
+
     public bool IsDead = false;
     private bool godMode = false;
 
@@ -57,9 +59,7 @@ public class Player : Cube {
             if (IsDead) {
                 AudioManager.Play("DeadHit");
             } else {
-                Debug.Log(health);
                 health--;
-                Debug.Log(health);
 
                 UpdateHealth();
 
@@ -71,6 +71,24 @@ public class Player : Cube {
                     IsDead = true;
                 }
             }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Pickup")) {
+            switch (collision.gameObject.GetComponent<Pickup>().PickupType) {
+                case "Fire Rate":
+                    Gun.FireRate *= 0.5f;
+                    break;
+                case "Health":
+                    health++;
+                    UpdateHealth();
+                    break;
+                default:
+                    break;
+            }
+
+            Destroy(collision.gameObject);
         }
     }
 }

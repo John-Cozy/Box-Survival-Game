@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : Cube {
-    public int ScoreValue   = 10;
+    public int ScoreValue     = 10;
+    public float PickupChance = 5;
 
     public GameObject ExplosionPrefab;
+    public GameObject[] PickupPrefabs;
 
     private Transform PlayerPosition;
 
@@ -32,6 +34,11 @@ public class Enemy : Cube {
 
                 GameObject explosion = Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
                 explosion.GetComponent<Explosion>().numOfPoints = ScoreValue;
+
+                if (StaticLibrary.RandomBool(PickupChance)) {
+                    Instantiate(PickupPrefabs[StaticLibrary.RandomChoice(PickupPrefabs.Length)], transform.position, Quaternion.identity);
+                }
+
                 Destroy(gameObject);
             } else {
                 AudioManager.Play(HitAudio);
