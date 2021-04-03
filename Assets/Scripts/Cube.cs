@@ -21,7 +21,7 @@ public class Cube : MonoBehaviour {
         health = MaxHealth;
     }
 
-    protected void UpdateHealth() {
+    protected void UpdateColour() {
         SpriteRenderer.color = Color.Lerp(DeadColour, InitialColour, (float) health / MaxHealth);
     }
 }

@@ -3,111 +3,87 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour {
-    [System.Serializable]
-    public struct EnemyType {
-        public GameObject EnemyPrefab;
-        public float SpawnWeight;
-    }
+    public WeightedList EnemyTypes;
 
-    public EnemyType[] EnemyTypes;
+    public float SpawnCount, RoundLength;
 
-    public float SpawnCount, SpawnRate, RoundLength;
+    private bool IsSpawning = false;
+    private bool BossRound = false;
 
-    private bool isSpawning = false;
-    private float spawnTime = 0.0f;
-    private float enemiesRemaining;
-
-    private float totalSpawnWeight;
+    private float SpawnRate;
+    private float SpawnTime;
+    private float EnemiesRemaining;
     
-    private float[] initialWeights;
-    private float initialSpawnRate, initialSpawnCount, initialRoundLength;
-
-    public void ResetSpawner() {
-        for (int i = 0; i < EnemyTypes.Length; i++) {
-            EnemyTypes[i].SpawnWeight = initialWeights[i];
-        }
-
-        SpawnRate = initialSpawnRate;
-        SpawnCount = initialSpawnCount;
-        RoundLength = initialRoundLength;
-    }
-
-    private void CalculateTotalWeight() {
-        totalSpawnWeight = 0;
-
-        foreach (EnemyType e in EnemyTypes) {
-            totalSpawnWeight += e.SpawnWeight;
-        }
-    }
-
-    public void NewRound() {
-
-        // Boosting enemy weights
-        for (int i = 1; i < EnemyTypes.Length; i++) {
-            EnemyTypes[i].SpawnWeight++;
-        }
-
-        CalculateTotalWeight();
-
-        SpawnCount += 10;
-        enemiesRemaining = SpawnCount;
-
-        SpawnRate = RoundLength / SpawnCount;
-
-        isSpawning = true;
-    }
+    private float[] InitialWeights;
+    private float InitialSpawnCount, InitialRoundLength;
 
     void Start() {
-        CalculateTotalWeight();
+        EnemyTypes.CalculateWeightTotal();
 
-        initialWeights = new float[EnemyTypes.Length];
+        InitialWeights = new float[EnemyTypes.Objects.Length];
 
-        for (int i = 0; i < EnemyTypes.Length; i++) {
-            initialWeights[i] = EnemyTypes[i].SpawnWeight;
+        for (int i = 0; i < EnemyTypes.Objects.Length; i++) {
+            InitialWeights[i] = EnemyTypes.Objects[i].Weight;
         }
 
-        initialSpawnRate = SpawnRate;
-        initialSpawnCount = SpawnCount;
-        initialRoundLength = RoundLength;
+        InitialSpawnCount  = SpawnCount;
+        InitialRoundLength = RoundLength;
     }
 
     void Update() {
-        if (isSpawning && !Director.IsGameOver()) {
-            if (enemiesRemaining > 0) {
-                spawnTime += Time.deltaTime;
+        if (IsSpawning && !Director.IsGameOver()) {
+            if (EnemiesRemaining > 0) {
+                SpawnTime += Time.deltaTime;
 
-                if (spawnTime >= SpawnRate) {
-                    spawnTime = 0.0f;
+                if (SpawnTime >= SpawnRate) {
+                    SpawnTime = 0.0f;
 
-                    Vector2 location = Random.value >= 0.5 ? new Vector2(10, Random.Range(-10, 10)) : new Vector2(-10, Random.Range(-10, 10));
+                    SpawnEnemy(EnemyTypes.GetRandomWeightedObject());
 
-                    GameObject enemy = null;
-
-                    float enemyWeightPosition = Random.Range(0, totalSpawnWeight);
-                    float currentWeightPosition = 0;
-
-                    foreach (EnemyType e in EnemyTypes) {
-                        currentWeightPosition += e.SpawnWeight;
-
-                        if (currentWeightPosition > enemyWeightPosition) {
-                            enemy = e.EnemyPrefab;
-                            break;
-                        }
-                    }
-
-                    Instantiate(enemy, location, Quaternion.identity);
-
-                    enemiesRemaining--;
+                    EnemiesRemaining--;
                 }
+
+            } else if (EnemiesRemaining == 0 && BossRound) {
+                SpawnEnemy(EnemyTypes.Objects[3].Prefab);
+                BossRound = false;
 
             } else if (GameObject.FindGameObjectsWithTag("Enemy").Length == 0) {
                 Director.RoundFinished();
-                isSpawning = false;
+                IsSpawning = false;
             }
         } else if (Director.IsGameOver()) {
-            isSpawning = false;
+            IsSpawning = false;
         }
     }
 
+    public void SpawnEnemy(GameObject enemy) {
+        Vector2 location = Random.value >= 0.5 ? new Vector2(10, Random.Range(-10, 10)) : new Vector2(-10, Random.Range(-10, 10));
+        
+        Instantiate(enemy, location, Quaternion.identity);
+    }
 
+    public void ResetSpawner() {
+        for (int i = 0; i < EnemyTypes.Objects.Length; i++) {
+            EnemyTypes.Objects[i].Weight = InitialWeights[i];
+        }
+
+        SpawnCount  = InitialSpawnCount;
+        RoundLength = InitialRoundLength;
+    }
+
+    public void NewRound(bool bossRound) {
+        BossRound = bossRound;
+
+        // Boosting enemy weights
+        for (int i = 1; i < EnemyTypes.Objects.Length - 1; i++) {
+            EnemyTypes.SetWeight(i, EnemyTypes.Objects[i].Weight + .5f);
+        }
+
+        SpawnCount += 10;
+        EnemiesRemaining = SpawnCount;
+
+        SpawnRate = RoundLength / SpawnCount;
+
+        IsSpawning = true;
+    }
 }

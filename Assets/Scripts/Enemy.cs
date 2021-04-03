@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : Cube {
     public int ScoreValue     = 10;
     public float PickupChance = 5;
 
     public GameObject ExplosionPrefab;
-    public GameObject[] PickupPrefabs;
+    public GameObject TextPrefab;
 
     private Transform PlayerPosition;
 
@@ -28,21 +29,26 @@ public class Enemy : Cube {
 
             Destroy(collision.gameObject);
 
-            if (health < 1) {
+            if (health == 0) {
                 AudioManager.Play(DeadAudio);
                 Director.AddToScore(ScoreValue);
 
-                GameObject explosion = Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
-                explosion.GetComponent<Explosion>().numOfPoints = ScoreValue;
+                Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
 
                 if (StaticLibrary.RandomBool(PickupChance)) {
-                    Instantiate(PickupPrefabs[StaticLibrary.RandomChoice(PickupPrefabs.Length)], transform.position, Quaternion.identity);
+                    PickupManager.PlaceRandomPickup(transform.position);
+                } else {
+                    Vector3 position = GameObject.Find("Camera").GetComponent<Camera>().WorldToScreenPoint(transform.position);
+                    GameObject points = Instantiate(TextPrefab, position, Quaternion.identity, GameObject.Find("Canvas").transform);
+                    points.GetComponent<Text>().text = "" + ScoreValue;
+
+                    Destroy(points, 2f);
                 }
 
                 Destroy(gameObject);
             } else {
                 AudioManager.Play(HitAudio);
-                UpdateHealth();
+                UpdateColour();
             }
         }
     }

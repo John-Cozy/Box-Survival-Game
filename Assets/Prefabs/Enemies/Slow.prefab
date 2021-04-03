@@ -65,15 +65,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3171069606897399957, guid: ad6606cf51852bf4088cda1a360bb306, type: 3}
       propertyPath: m_Color.b
-      value: 0.050980397
+      value: 0.14117648
       objectReference: {fileID: 0}
     - target: {fileID: 3171069606897399957, guid: ad6606cf51852bf4088cda1a360bb306, type: 3}
       propertyPath: m_Color.g
-      value: 0.039215688
+      value: 0.30588236
       objectReference: {fileID: 0}
     - target: {fileID: 3171069606897399957, guid: ad6606cf51852bf4088cda1a360bb306, type: 3}
       propertyPath: m_Color.r
-      value: 0.95294124
+      value: 0.8117648
       objectReference: {fileID: 0}
     - target: {fileID: 3171069606897399963, guid: ad6606cf51852bf4088cda1a360bb306, type: 3}
       propertyPath: KillClip
@@ -121,15 +121,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3171069606897399963, guid: ad6606cf51852bf4088cda1a360bb306, type: 3}
       propertyPath: InitialColour.b
-      value: 0.049480356
+      value: 0.14117648
       objectReference: {fileID: 0}
     - target: {fileID: 3171069606897399963, guid: ad6606cf51852bf4088cda1a360bb306, type: 3}
       propertyPath: InitialColour.g
-      value: 0.04045032
+      value: 0.30588236
       objectReference: {fileID: 0}
     - target: {fileID: 3171069606897399963, guid: ad6606cf51852bf4088cda1a360bb306, type: 3}
       propertyPath: InitialColour.r
-      value: 0.9528302
+      value: 0.8117648
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad6606cf51852bf4088cda1a360bb306, type: 3}

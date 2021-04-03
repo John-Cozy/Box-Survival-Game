@@ -5,22 +5,24 @@ using UnityEngine.UI;
 
 public class Director : MonoBehaviour
 {
-    private static Director singleton;
 
     public Spawner EnemySpawner;
     public Tutorial Tutorial;
+
+    public GameObject RoundText;
 
     public Text Score;
     public CanvasGroup Group;
     public int PlayerScore = 0;
     public bool GameOver = false;
 
-    public GameObject RoundText;
+
+    private static Director Singleton;
 
     private int round = 1;
 
     private void Start() {
-        singleton = this;
+        Singleton = this;
     }
 
     private void Update() {
@@ -29,6 +31,10 @@ public class Director : MonoBehaviour
             GameObject.Find("Player").GetComponent<Player>().ResetPlayer();
 
             foreach (GameObject g in GameObject.FindGameObjectsWithTag("Enemy")) {
+                Destroy(g);
+            }
+
+            foreach (GameObject g in GameObject.FindGameObjectsWithTag("Pickup")) {
                 Destroy(g);
             }
 
@@ -52,7 +58,7 @@ public class Director : MonoBehaviour
     }
 
     public void NewRound() {
-        RoundText.GetComponent<Text>().text = "Round " + round;
+        RoundText.GetComponent<Text>().text = round % 5 == 0 ? "Boss Round" : ("Round " + round);
         RoundText.GetComponent<CanvasGroup>().alpha = 1;
         RoundText.GetComponent<CanvasGroup>().blocksRaycasts = true;
 
@@ -64,7 +70,8 @@ public class Director : MonoBehaviour
 
         RoundText.GetComponent<CanvasGroup>().alpha = 0;
         RoundText.GetComponent<CanvasGroup>().blocksRaycasts = false;
-        EnemySpawner.NewRound();
+
+        EnemySpawner.NewRound(round % 5 == 0);
     }
 
     public void EndGame() {
@@ -85,28 +92,28 @@ public class Director : MonoBehaviour
     // Static methods
 
     public static Director GetDirector() {
-        return singleton;
+        return Singleton;
     }
 
     public static void AddToScore(int scoreToAdd) {
-        singleton.PlayerScore += scoreToAdd;
-        singleton.UpdateScore();
+        Singleton.PlayerScore += scoreToAdd;
+        Singleton.UpdateScore();
     }
 
     public static void PlayerDied() {
-        singleton.EndGame();
+        Singleton.EndGame();
     }
 
     public static bool IsGameOver() {
-        return singleton.GameOver;
+        return Singleton.GameOver;
     }
 
     public static void RoundFinished() {
-        singleton.round++;
-        singleton.NewRound();
+        Singleton.round++;
+        Singleton.NewRound();
     }
 
     public static void NewGame() {
-        singleton.NewRound();
+        Singleton.NewRound();
     }
 }

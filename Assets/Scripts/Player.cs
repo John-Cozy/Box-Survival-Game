@@ -42,7 +42,7 @@ public class Player : Cube {
             godMode = true;
         } else {
             AudioManager.Play("GodmodeOff");
-            UpdateHealth();
+            UpdateColour();
             godMode = false;
         }
     }
@@ -61,14 +61,18 @@ public class Player : Cube {
             } else {
                 health--;
 
-                UpdateHealth();
+                UpdateColour();
 
                 if (health > 0) {
                     AudioManager.Play(HitAudio);
+                    PickupManager.EnableHealthPickups();
                 } else if (health == 0) {
                     AudioManager.Play(DeadAudio);
-                    Director.PlayerDied();
+                    PickupManager.DisableHealthPickups();
+                    
                     IsDead = true;
+
+                    Director.PlayerDied();
                 }
             }
         }
@@ -77,12 +81,25 @@ public class Player : Cube {
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.CompareTag("Pickup")) {
             switch (collision.gameObject.GetComponent<Pickup>().PickupType) {
-                case "Fire Rate":
-                    Gun.FireRate *= 0.5f;
+                case "Machine Gun":
+                    Gun.ChangeGun(1);
+                    break;
+                case "Double Barrel":
+                    Gun.ChangeGun(2);
+                    break;
+                case "Shotgun":
+                    Gun.ChangeGun(3);
                     break;
                 case "Health":
-                    health++;
-                    UpdateHealth();
+                    if (health != MaxHealth) {
+                        health++;
+
+                        if (!godMode) UpdateColour();
+
+                        if (health == MaxHealth) {
+                            PickupManager.DisableHealthPickups();
+                        }
+                    }
                     break;
                 default:
                     break;

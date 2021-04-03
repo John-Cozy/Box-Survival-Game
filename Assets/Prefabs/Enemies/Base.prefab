@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: db750325989564987a34393247d883b4, type: 3}
-  m_Color: {r: 0.49056602, g: 0.06247775, b: 0.06247775, a: 1}
+  m_Color: {r: 0.49056602, g: 0.025453899, b: 0.025453899, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -152,8 +152,6 @@ MonoBehaviour:
   HitAudio: EnemyHit
   DeadAudio: EnemyKilledBase
   ScoreValue: 10
-  PickupChance: 5
+  PickupChance: 3
   ExplosionPrefab: {fileID: 7994649501521857999, guid: 6918fb505eb5af247bced5ebb776763b, type: 3}
-  PickupPrefabs:
-  - {fileID: 884617197416513365, guid: b34ddcc3745cd2a4ea75d3f842648f5f, type: 3}
-  - {fileID: 7419318967443787590, guid: 9877bcc77d305e849a34d39f9bff1614, type: 3}
+  TextPrefab: {fileID: 8486188726446939506, guid: c2f42fd82747c2c47be4efca8c19f8d1, type: 3}

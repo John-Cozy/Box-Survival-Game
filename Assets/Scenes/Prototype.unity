@@ -312,6 +312,7 @@ Transform:
   m_Children:
   - {fileID: 573645393}
   - {fileID: 623414817}
+  - {fileID: 1162929521}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -329,11 +330,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemySpawner: {fileID: 573645394}
   Tutorial: {fileID: 0}
+  RoundText: {fileID: 1353679018}
   Score: {fileID: 1551347249}
   Group: {fileID: 1665637370}
   PlayerScore: 0
   GameOver: 0
-  RoundText: {fileID: 1353679018}
 --- !u!1 &517344554
 GameObject:
   m_ObjectHideFlags: 0
@@ -612,15 +613,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyTypes:
-  - EnemyPrefab: {fileID: 3171069606897399952, guid: ad6606cf51852bf4088cda1a360bb306, type: 3}
-    SpawnWeight: 10
-  - EnemyPrefab: {fileID: 2899941744192239313, guid: 2649f8233233d3f4b9cdace69f8c095f, type: 3}
-    SpawnWeight: 0
-  - EnemyPrefab: {fileID: 1785008349485684769, guid: 8d49ab17f49f6dc45bd2f0c636b1873f, type: 3}
-    SpawnWeight: 0
+    Objects:
+    - Prefab: {fileID: 3171069606897399952, guid: ad6606cf51852bf4088cda1a360bb306, type: 3}
+      Weight: 10
+    - Prefab: {fileID: 2899941744192239313, guid: 2649f8233233d3f4b9cdace69f8c095f, type: 3}
+      Weight: 0
+    - Prefab: {fileID: 1785008349485684769, guid: 8d49ab17f49f6dc45bd2f0c636b1873f, type: 3}
+      Weight: 0
+    - Prefab: {fileID: 5523873994647790567, guid: 12ae2a3aecf8dfd448cad71495f800d4, type: 3}
+      Weight: 0
   SpawnCount: 10
-  SpawnRate: 1
-  RoundLength: 20
+  RoundLength: 1
 --- !u!1 &623414816
 GameObject:
   m_ObjectHideFlags: 0
@@ -766,7 +769,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -100
   m_Sprite: {fileID: 7482667652216324306, guid: db750325989564987a34393247d883b4, type: 3}
   m_Color: {r: 0.7169812, g: 0.7169812, b: 0.7169812, a: 1}
   m_FlipX: 0
@@ -997,8 +1000,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce6e2126235deeb4a8d7f3a50782bc49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BulletPrefab: {fileID: 8302180869234490534, guid: 5201ca66033b14243967eb3a228557a9, type: 3}
-  FireRate: 0.3
+  GunTypes:
+  - Name: Base
+    BulletPrefab: {fileID: 8302180869234490534, guid: 5201ca66033b14243967eb3a228557a9, type: 3}
+    FireRate: 0.4
+    BulletNumber: 1
+    DistanceBetween: 0
+    Spread: 0
+    SpreadAngle: 0
+  - Name: Machine Gun
+    BulletPrefab: {fileID: 3911484439014004374, guid: 5e5c4df477aef9042ba8eece2a246ce7, type: 3}
+    FireRate: 0.18
+    BulletNumber: 1
+    DistanceBetween: 0
+    Spread: 0
+    SpreadAngle: 0
+  - Name: Double Barrel
+    BulletPrefab: {fileID: 159450719097996715, guid: 5b2db7b5bd7fb6e4699ade08a16b4ea9, type: 3}
+    FireRate: 0.3
+    BulletNumber: 2
+    DistanceBetween: 0.4
+    Spread: 0
+    SpreadAngle: 0
+  - Name: Shotgun
+    BulletPrefab: {fileID: 703956288552808916, guid: 79b8a4a0cc6cf454d8668ee7bde0471e, type: 3}
+    FireRate: 0.45
+    BulletNumber: 7
+    DistanceBetween: 0.1
+    Spread: 1
+    SpreadAngle: 7
+  ResetRate: 12
 --- !u!1 &971853253
 GameObject:
   m_ObjectHideFlags: 0
@@ -1232,6 +1263,59 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1090975348}
   m_CullTransparentMesh: 1
+--- !u!1 &1162929520
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1162929521}
+  - component: {fileID: 1162929522}
+  m_Layer: 0
+  m_Name: Pickup Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1162929521
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1162929520}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 436559338}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1162929522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1162929520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a06d77c81adf71e468a12a7a71fb8944, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PickupTypes:
+    Objects:
+    - Prefab: {fileID: 7419318967443787590, guid: 9877bcc77d305e849a34d39f9bff1614, type: 3}
+      Weight: 0
+    - Prefab: {fileID: 7530126853307227692, guid: d70358a15a5550b4cb150e473f2f36b9, type: 3}
+      Weight: 1
+    - Prefab: {fileID: 3141726903755588657, guid: 517dfaedaed0d254eb64fce557807eac, type: 3}
+      Weight: 1
+    - Prefab: {fileID: 884617197416513365, guid: b34ddcc3745cd2a4ea75d3f842648f5f, type: 3}
+      Weight: 1
 --- !u!1 &1326519133
 GameObject:
   m_ObjectHideFlags: 0
