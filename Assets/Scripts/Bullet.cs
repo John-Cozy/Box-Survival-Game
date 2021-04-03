@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour {
     public float MoveVelocity = 0.02f;
+    public float DeathTime = 5f;
 
     // Start is called before the first frame update
     void Start() {
-        Vector3 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-        transform.up = new Vector2(direction.x, direction.y);
-        Destroy(gameObject, 5f);
+        Destroy(gameObject, DeathTime);
     }
 
     private void FixedUpdate() {

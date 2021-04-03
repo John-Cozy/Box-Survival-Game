@@ -2,22 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : Cube {
 
-    public float MoveSpeed = 0.01f;
-    public int Health = 3;
-    public SpriteRenderer SpriteRenderer;
+    public Gun Gun;
+
     public bool IsDead = false;
-
     private bool godMode = false;
-    private int currentHealth;
 
-    // Start is called before the first frame update
-    private void Start() {
-        currentHealth = Health;
-    }
-
-    // Update is called once per frame
     private void Update() {
         if (!IsDead) {
             if (Input.GetKeyDown(KeyCode.G)) {
@@ -51,34 +42,70 @@ public class Player : MonoBehaviour {
             godMode = true;
         } else {
             AudioManager.Play("GodmodeOff");
-            SpriteRenderer.color = Color.Lerp(Color.red, Color.white, (float)currentHealth / Health);
+            UpdateColour();
             godMode = false;
         }
     }
 
     public void ResetPlayer() {
         IsDead = false;
-        currentHealth = Health;
+        health = MaxHealth;
         SpriteRenderer.color = Color.white;
         transform.position = new Vector3(0, 0, 0);
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.CompareTag("Enemy") && !godMode) {
-            currentHealth--;
-
-            SpriteRenderer.color = Color.Lerp(Color.red, Color.white, (float) currentHealth / Health);
-
-            if (currentHealth >= 0) {
-                AudioManager.Play("PlayerHit");
-            } else {
+            if (IsDead) {
                 AudioManager.Play("DeadHit");
+            } else {
+                health--;
+
+                UpdateColour();
+
+                if (health > 0) {
+                    AudioManager.Play(HitAudio);
+                    PickupManager.EnableHealthPickups();
+                } else if (health == 0) {
+                    AudioManager.Play(DeadAudio);
+                    PickupManager.DisableHealthPickups();
+                    
+                    IsDead = true;
+
+                    Director.PlayerDied();
+                }
+            }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Pickup")) {
+            switch (collision.gameObject.GetComponent<Pickup>().PickupType) {
+                case "Machine Gun":
+                    Gun.ChangeGun(1);
+                    break;
+                case "Double Barrel":
+                    Gun.ChangeGun(2);
+                    break;
+                case "Shotgun":
+                    Gun.ChangeGun(3);
+                    break;
+                case "Health":
+                    if (health != MaxHealth) {
+                        health++;
+
+                        if (!godMode) UpdateColour();
+
+                        if (health == MaxHealth) {
+                            PickupManager.DisableHealthPickups();
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
 
-            if (currentHealth == 0) {
-                Director.PlayerDied();
-                IsDead = true;
-            }
+            Destroy(collision.gameObject);
         }
     }
 }

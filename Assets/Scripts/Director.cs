@@ -5,35 +5,36 @@ using UnityEngine.UI;
 
 public class Director : MonoBehaviour
 {
-    private static Director singleton;
 
     public Spawner EnemySpawner;
     public Tutorial Tutorial;
+
+    public GameObject RoundText;
 
     public Text Score;
     public CanvasGroup Group;
     public int PlayerScore = 0;
     public bool GameOver = false;
 
-    private float time = 0.0f;
+
+    private static Director Singleton;
+
+    private int round = 1;
 
     private void Start() {
-        singleton = this;
+        Singleton = this;
     }
 
     private void Update() {
-        time += Time.deltaTime;
-
-        if (time >= 1 && !GameOver && EnemySpawner.IsSpawning) {
-            time = 0.0f;
-
-            AddToScore(1);
-        }
 
         if (Input.GetKeyDown(KeyCode.Space) && GameOver) {
             GameObject.Find("Player").GetComponent<Player>().ResetPlayer();
 
             foreach (GameObject g in GameObject.FindGameObjectsWithTag("Enemy")) {
+                Destroy(g);
+            }
+
+            foreach (GameObject g in GameObject.FindGameObjectsWithTag("Pickup")) {
                 Destroy(g);
             }
 
@@ -43,7 +44,12 @@ public class Director : MonoBehaviour
             PlayerScore = 0;
             UpdateScore();
 
+            round = 1;
+
             EnemySpawner.ResetSpawner();
+            NewRound();
+        } else if (Input.GetKey("escape")) {
+            Application.Quit();
         }
     }
 
@@ -51,15 +57,27 @@ public class Director : MonoBehaviour
         Score.text = "Score: " + PlayerScore;
     }
 
-    public void NewGame() {
-        StartSpawning();
+    public void NewRound() {
+        RoundText.GetComponent<Text>().text = round % 5 == 0 ? "Boss Round" : ("Round " + round);
+        RoundText.GetComponent<CanvasGroup>().alpha = 1;
+        RoundText.GetComponent<CanvasGroup>().blocksRaycasts = true;
+
+        StartCoroutine(HideRoundText());
+    }
+
+    IEnumerator HideRoundText() {
+        yield return new WaitForSeconds(2);
+
+        RoundText.GetComponent<CanvasGroup>().alpha = 0;
+        RoundText.GetComponent<CanvasGroup>().blocksRaycasts = false;
+
+        EnemySpawner.NewRound(round % 5 == 0);
     }
 
     public void EndGame() {
         ShowGameOver();
         GameOver = true;
     }
-
 
     private void ShowGameOver() {
         Group.alpha = 1;
@@ -74,23 +92,28 @@ public class Director : MonoBehaviour
     // Static methods
 
     public static Director GetDirector() {
-        return singleton;
+        return Singleton;
     }
 
     public static void AddToScore(int scoreToAdd) {
-        singleton.PlayerScore += scoreToAdd;
-        singleton.UpdateScore();
+        Singleton.PlayerScore += scoreToAdd;
+        Singleton.UpdateScore();
     }
 
     public static void PlayerDied() {
-        singleton.EndGame();
+        Singleton.EndGame();
     }
 
     public static bool IsGameOver() {
-        return singleton.GameOver;
+        return Singleton.GameOver;
     }
 
-    public static void StartSpawning() {
-        singleton.EnemySpawner.IsSpawning = true;
+    public static void RoundFinished() {
+        Singleton.round++;
+        Singleton.NewRound();
+    }
+
+    public static void NewGame() {
+        Singleton.NewRound();
     }
 }

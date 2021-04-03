@@ -1,40 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Enemy : MonoBehaviour {
+public class Enemy : Cube {
+    public int ScoreValue     = 10;
+    public float PickupChance = 5;
 
-    public float MoveSpeed  = 0.1f;
-    public int MaxHealth    = 1;
-    public int ScoreValue   = 10;
+    public GameObject ExplosionPrefab;
+    public GameObject TextPrefab;
 
     private Transform PlayerPosition;
-    private int currentHealth;
 
     // Start is called before the first frame update
     void Start() {
+        health = MaxHealth;
         PlayerPosition = GameObject.Find("Player").transform;
-        currentHealth = MaxHealth;
     }
 
     // Update is called once per frame
     void FixedUpdate() {
-        float step = MoveSpeed * Time.deltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, PlayerPosition.position, step);
+        transform.position = Vector3.MoveTowards(transform.position, PlayerPosition.position, MoveSpeed * Time.deltaTime);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.CompareTag("Bullet")) {
-            currentHealth--;
+            health--;
 
             Destroy(collision.gameObject);
 
-            if (currentHealth < 1) {
-                AudioManager.Play("EnemyKilled");
+            if (health == 0) {
+                AudioManager.Play(DeadAudio);
                 Director.AddToScore(ScoreValue);
+
+                Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+
+                if (StaticLibrary.RandomBool(PickupChance)) {
+                    PickupManager.PlaceRandomPickup(transform.position);
+                } else {
+                    Vector3 position = GameObject.Find("Camera").GetComponent<Camera>().WorldToScreenPoint(transform.position);
+                    GameObject points = Instantiate(TextPrefab, position, Quaternion.identity, GameObject.Find("Canvas").transform);
+                    points.GetComponent<Text>().text = "" + ScoreValue;
+
+                    Destroy(points, 2f);
+                }
+
                 Destroy(gameObject);
             } else {
-                AudioManager.Play("EnemyHit");
+                AudioManager.Play(HitAudio);
+                UpdateColour();
             }
         }
     }

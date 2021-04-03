@@ -13,6 +13,7 @@ public class Tutorial : MonoBehaviour {
     public Text LeftClick;
 
     private bool w, a, s, d, lClick, g1, g2;
+    private bool startedGame;
 
     // Update is called once per frame
     void Update() {
@@ -48,13 +49,14 @@ public class Tutorial : MonoBehaviour {
     }
 
     private void FixedUpdate() {
-        if (w && a && s && d && lClick && g2) {
+        if (w && a && s && d && lClick && g2 && !startedGame) {
             Group.alpha -= 0.05f;
 
             if (Group.alpha == 1) {
                 Group.blocksRaycasts = false;
             } else if (Group.alpha <= 0) {
-                Director.StartSpawning();
+                Director.NewGame();
+                startedGame = true;
             }
         }
     }

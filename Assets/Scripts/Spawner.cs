@@ -3,52 +3,87 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour {
-    public GameObject EnemyPrefab;
+    public WeightedList EnemyTypes;
 
-    public float SpawnRate;
-    public float SpawnIncrementRate;
-    public float SpawnIncrement;
+    public float SpawnCount, RoundLength;
 
-    public bool IsSpawning = false;
+    private bool IsSpawning = false;
+    private bool BossRound = false;
 
-    private float spawnTime = 0.0f;
-    private float incrementTime = 0.0f;
+    private float SpawnRate;
+    private float SpawnTime;
+    private float EnemiesRemaining;
+    
+    private float[] InitialWeights;
+    private float InitialSpawnCount, InitialRoundLength;
 
-    private float initialSpawnRate;
-
-    public void ResetSpawner() {
-        SpawnRate = initialSpawnRate;
-    }
-
-    // Start is called before the first frame update
     void Start() {
-        initialSpawnRate = SpawnRate;
+        EnemyTypes.CalculateWeightTotal();
+
+        InitialWeights = new float[EnemyTypes.Objects.Length];
+
+        for (int i = 0; i < EnemyTypes.Objects.Length; i++) {
+            InitialWeights[i] = EnemyTypes.Objects[i].Weight;
+        }
+
+        InitialSpawnCount  = SpawnCount;
+        InitialRoundLength = RoundLength;
     }
 
-    // Update is called once per frame
     void Update() {
-        if (IsSpawning) {
-            spawnTime += Time.deltaTime;
+        if (IsSpawning && !Director.IsGameOver()) {
+            if (EnemiesRemaining > 0) {
+                SpawnTime += Time.deltaTime;
 
-            if (spawnTime >= SpawnRate) {
-                spawnTime = 0.0f;
+                if (SpawnTime >= SpawnRate) {
+                    SpawnTime = 0.0f;
 
-                Vector2 location = Random.value >= 0.5 ? new Vector2(10, Random.Range(-10, 10)) : new Vector2(-10, Random.Range(-10, 10));
+                    SpawnEnemy(EnemyTypes.GetRandomWeightedObject());
 
-                Instantiate(EnemyPrefab, location, Quaternion.identity);
-            }
-
-            incrementTime += Time.deltaTime;
-
-            if (incrementTime >= SpawnIncrementRate) {
-                incrementTime = 0.0f;
-
-                if (!(SpawnRate - SpawnIncrement < 0.01)) {
-                    SpawnRate -= SpawnIncrement;
+                    EnemiesRemaining--;
                 }
+
+            } else if (EnemiesRemaining == 0 && BossRound) {
+                SpawnEnemy(EnemyTypes.Objects[3].Prefab);
+                BossRound = false;
+
+            } else if (GameObject.FindGameObjectsWithTag("Enemy").Length == 0) {
+                Director.RoundFinished();
+                IsSpawning = false;
             }
+        } else if (Director.IsGameOver()) {
+            IsSpawning = false;
         }
     }
 
+    public void SpawnEnemy(GameObject enemy) {
+        Vector2 location = Random.value >= 0.5 ? new Vector2(10, Random.Range(-10, 10)) : new Vector2(-10, Random.Range(-10, 10));
+        
+        Instantiate(enemy, location, Quaternion.identity);
+    }
 
+    public void ResetSpawner() {
+        for (int i = 0; i < EnemyTypes.Objects.Length; i++) {
+            EnemyTypes.Objects[i].Weight = InitialWeights[i];
+        }
+
+        SpawnCount  = InitialSpawnCount;
+        RoundLength = InitialRoundLength;
+    }
+
+    public void NewRound(bool bossRound) {
+        BossRound = bossRound;
+
+        // Boosting enemy weights
+        for (int i = 1; i < EnemyTypes.Objects.Length - 1; i++) {
+            EnemyTypes.SetWeight(i, EnemyTypes.Objects[i].Weight + .5f);
+        }
+
+        SpawnCount += 10;
+        EnemiesRemaining = SpawnCount;
+
+        SpawnRate = RoundLength / SpawnCount;
+
+        IsSpawning = true;
+    }
 }
