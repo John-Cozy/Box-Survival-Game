@@ -13,11 +13,13 @@ public class MainMenu : UIGroup {
     }
 
     public void StartGame() {
+        AudioManager.Play("Menu");
         Hide();
         Director.NewGame(Difficulty);
     }
 
     public void StartTutorial() {
+        AudioManager.Play("Menu");
         Hide();
         Tutorial.BeginTutorial();
     }
@@ -28,16 +30,19 @@ public class MainMenu : UIGroup {
                 Difficulty++;
                 DifficultyText.color = new Color(0.6603774f, 0.4891209f, 0);
                 DifficultyText.text = "NORMAL";
+                AudioManager.Play("Normal");
                 break;
             case 1:
                 Difficulty++;
                 DifficultyText.color = new Color(0.6588235f, 0.03190858f, 0);
                 DifficultyText.text = "HARD";
+                AudioManager.Play("Hard");
                 break;
             case 2:
                 Difficulty = 0;
                 DifficultyText.color = new Color(0, 0.6588235f, 0.03508177f);
                 DifficultyText.text = "EASY";
+                AudioManager.Play("Easy");
                 break;
         }
     }

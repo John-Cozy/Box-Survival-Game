@@ -38,8 +38,6 @@ public class Director : MonoBehaviour {
 
             Spawner.ResetSpawner();
             NewRoundInterlude();
-        } else if (Input.GetKey("escape")) {
-            Application.Quit();
         }
     }
 

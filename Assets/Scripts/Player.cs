@@ -108,6 +108,8 @@ public class Player : Cube {
                     break;
             }
 
+            AudioManager.Play("Pickup");
+
             Destroy(collision.gameObject);
         }
     }
