@@ -1248,6 +1248,31 @@ MonoBehaviour:
     Volume: 0.2
     Pitch: 1.03
     Source: {fileID: 0}
+  - Name: Pickup
+    Clip: {fileID: 8300000, guid: 51a3cd76ccf795b4c80f1d542a95e84c, type: 3}
+    Volume: 0.2
+    Pitch: 1.03
+    Source: {fileID: 0}
+  - Name: Menu
+    Clip: {fileID: 8300000, guid: 37153d00b98360e48a036ada1d190272, type: 3}
+    Volume: 0.2
+    Pitch: 0.69
+    Source: {fileID: 0}
+  - Name: Easy
+    Clip: {fileID: 8300000, guid: 37153d00b98360e48a036ada1d190272, type: 3}
+    Volume: 0.2
+    Pitch: 1.2
+    Source: {fileID: 0}
+  - Name: Normal
+    Clip: {fileID: 8300000, guid: 37153d00b98360e48a036ada1d190272, type: 3}
+    Volume: 0.2
+    Pitch: 1
+    Source: {fileID: 0}
+  - Name: Hard
+    Clip: {fileID: 8300000, guid: 37153d00b98360e48a036ada1d190272, type: 3}
+    Volume: 0.2
+    Pitch: 0.8
+    Source: {fileID: 0}
 --- !u!1 &676152129
 GameObject:
   m_ObjectHideFlags: 0

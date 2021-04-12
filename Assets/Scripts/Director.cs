@@ -118,6 +118,8 @@ public class Director : MonoBehaviour {
         Spawner.SetDifficultyModifier(DifficultyModifier);
         Spawner.ResetSpawner();
 
+        Singleton.round = 1;
+
         Singleton.SpawnPlayer();
         Singleton.NewRoundInterlude();
     }
