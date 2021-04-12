@@ -8,6 +8,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 44166434200207408, guid: b34ddcc3745cd2a4ea75d3f842648f5f, type: 3}
+      propertyPath: Renderer
+      value: 
+      objectReference: {fileID: 7419318967443787584}
+    - target: {fileID: 44166434200207408, guid: b34ddcc3745cd2a4ea75d3f842648f5f, type: 3}
       propertyPath: PickupType
       value: Health
       objectReference: {fileID: 0}
@@ -73,3 +77,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b34ddcc3745cd2a4ea75d3f842648f5f, type: 3}
+--- !u!212 &7419318967443787584 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 884617197416513363, guid: b34ddcc3745cd2a4ea75d3f842648f5f, type: 3}
+  m_PrefabInstance: {fileID: 7687783024539758611}
+  m_PrefabAsset: {fileID: 0}

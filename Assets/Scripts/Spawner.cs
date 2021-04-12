@@ -1,23 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour {
+
     public WeightedList EnemyTypes;
 
-    public float SpawnCount, RoundLength;
+    public float RoundLength;
+    public float RoundLengthIncrement;
+
+    public int SpawnCount;
+    public int SpawnCountIncrement;
+
+    private float DifficultyModifier = 1;
 
     private bool IsSpawning = false;
     private bool BossRound = false;
 
     private float SpawnRate;
     private float SpawnTime;
-    private float EnemiesRemaining;
-    
-    private float[] InitialWeights;
-    private float InitialSpawnCount, InitialRoundLength;
 
-    void Start() {
+    private float[] InitialWeights;
+    private float   InitialRoundLength;
+    private int     InitialSpawnCount;
+
+    private int EnemiesRemaining;
+
+    private static Spawner Singleton;
+
+    private void Start() {
+        Singleton = this;
+
         EnemyTypes.CalculateWeightTotal();
 
         InitialWeights = new float[EnemyTypes.Objects.Length];
@@ -30,7 +41,7 @@ public class Spawner : MonoBehaviour {
         InitialRoundLength = RoundLength;
     }
 
-    void Update() {
+    private void Update() {
         if (IsSpawning && !Director.IsGameOver()) {
             if (EnemiesRemaining > 0) {
                 SpawnTime += Time.deltaTime;
@@ -56,13 +67,13 @@ public class Spawner : MonoBehaviour {
         }
     }
 
-    public void SpawnEnemy(GameObject enemy) {
+    private void SpawnEnemy(GameObject enemy) {
         Vector2 location = Random.value >= 0.5 ? new Vector2(10, Random.Range(-10, 10)) : new Vector2(-10, Random.Range(-10, 10));
         
         Instantiate(enemy, location, Quaternion.identity);
     }
 
-    public void ResetSpawner() {
+    private void ResetSpawnerValues() {
         for (int i = 0; i < EnemyTypes.Objects.Length; i++) {
             EnemyTypes.Objects[i].Weight = InitialWeights[i];
         }
@@ -71,7 +82,7 @@ public class Spawner : MonoBehaviour {
         RoundLength = InitialRoundLength;
     }
 
-    public void NewRound(bool bossRound) {
+    private void StartNewRound(bool bossRound) {
         BossRound = bossRound;
 
         // Boosting enemy weights
@@ -79,11 +90,29 @@ public class Spawner : MonoBehaviour {
             EnemyTypes.SetWeight(i, EnemyTypes.Objects[i].Weight + .5f);
         }
 
-        SpawnCount += 10;
+        SpawnCount += (int) (SpawnCountIncrement * DifficultyModifier);
+        RoundLength += RoundLengthIncrement * DifficultyModifier;
+
         EnemiesRemaining = SpawnCount;
 
         SpawnRate = RoundLength / SpawnCount;
 
         IsSpawning = true;
+    }
+
+    public static void NewRound(bool bossRound) {
+        Singleton.StartNewRound(bossRound);
+    }
+
+    public static void ResetSpawner() {
+        Singleton.ResetSpawnerValues();
+    }
+
+    public static void SetDifficultyModifier(float modifier) {
+        Singleton.DifficultyModifier = modifier;
+    }
+
+    public static void StopSpawning() {
+        Singleton.IsSpawning = false;
     }
 }

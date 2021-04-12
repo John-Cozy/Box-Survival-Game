@@ -9,12 +9,16 @@ public class Player : Cube {
     public bool IsDead = false;
     private bool godMode = false;
 
+    private static Player Singleton;
+
+    private new void Start() {
+        base.Start();
+        Singleton = this;
+    }
+
     private void Update() {
-        if (!IsDead) {
-            if (Input.GetKeyDown(KeyCode.G)) {
-                ToggleGodmode();
-            }
-        }
+        if (!IsDead && Input.GetKeyDown(KeyCode.G)) ToggleGodmode();
+        if (Input.GetKeyDown(KeyCode.Escape)) Director.ReturnToMenu();
     }
 
     private void FixedUpdate() {
@@ -52,6 +56,7 @@ public class Player : Cube {
         health = MaxHealth;
         SpriteRenderer.color = Color.white;
         transform.position = new Vector3(0, 0, 0);
+        Gun.ChangeGun(0);
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
@@ -101,11 +106,13 @@ public class Player : Cube {
                         }
                     }
                     break;
-                default:
-                    break;
             }
 
             Destroy(collision.gameObject);
         }
+    }
+
+    public static Player GetPlayer() {
+        return Singleton;
     }
 }

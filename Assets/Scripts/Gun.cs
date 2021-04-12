@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Gun : MonoBehaviour {
 
     [System.Serializable]
     public class GunType {
         public string Name;
+        public string SoundClipName;
         public GameObject BulletPrefab;
         public float FireRate;
         public int BulletNumber;
@@ -50,7 +48,7 @@ public class Gun : MonoBehaviour {
     }
 
     private void FireGun() {
-        AudioManager.Play("Fire");
+        AudioManager.Play(CurrentGun.SoundClipName);
 
         for (int i = 0; i < CurrentGun.BulletNumber; i++) {
             Vector3 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;

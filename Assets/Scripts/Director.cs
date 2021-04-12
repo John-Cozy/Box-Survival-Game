@@ -1,53 +1,43 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Director : MonoBehaviour
-{
+public class Director : MonoBehaviour {
 
-    public Spawner EnemySpawner;
-    public Tutorial Tutorial;
-
+    public GameObject PlayerPrefab;
     public GameObject RoundText;
 
     public Text Score;
-    public CanvasGroup Group;
+
+    public UIGroup GameOverScreen;
+
     public int PlayerScore = 0;
     public bool GameOver = false;
 
+    private int round = 1;
 
     private static Director Singleton;
-
-    private int round = 1;
 
     private void Start() {
         Singleton = this;
     }
 
     private void Update() {
-
         if (Input.GetKeyDown(KeyCode.Space) && GameOver) {
-            GameObject.Find("Player").GetComponent<Player>().ResetPlayer();
+            Player.GetPlayer().ResetPlayer();
 
-            foreach (GameObject g in GameObject.FindGameObjectsWithTag("Enemy")) {
-                Destroy(g);
-            }
-
-            foreach (GameObject g in GameObject.FindGameObjectsWithTag("Pickup")) {
-                Destroy(g);
-            }
+            DeleteEnemiesAndPickups();
 
             GameOver = false;
-            HideGameOver();
+            GameOverScreen.Hide();
 
             PlayerScore = 0;
             UpdateScore();
 
             round = 1;
 
-            EnemySpawner.ResetSpawner();
-            NewRound();
+            Spawner.ResetSpawner();
+            NewRoundInterlude();
         } else if (Input.GetKey("escape")) {
             Application.Quit();
         }
@@ -57,36 +47,28 @@ public class Director : MonoBehaviour
         Score.text = "Score: " + PlayerScore;
     }
 
-    public void NewRound() {
+    public void NewRoundInterlude() {
         RoundText.GetComponent<Text>().text = round % 5 == 0 ? "Boss Round" : ("Round " + round);
-        RoundText.GetComponent<CanvasGroup>().alpha = 1;
-        RoundText.GetComponent<CanvasGroup>().blocksRaycasts = true;
+        RoundText.GetComponent<UIGroup>().Show();
 
-        StartCoroutine(HideRoundText());
+        StartCoroutine(NewRound());
     }
 
-    IEnumerator HideRoundText() {
+    IEnumerator NewRound() {
         yield return new WaitForSeconds(2);
+        RoundText.GetComponent<UIGroup>().Hide();
 
-        RoundText.GetComponent<CanvasGroup>().alpha = 0;
-        RoundText.GetComponent<CanvasGroup>().blocksRaycasts = false;
-
-        EnemySpawner.NewRound(round % 5 == 0);
+        bool bossRound = round % 5 == 0;
+        Spawner.NewRound(bossRound);
     }
 
-    public void EndGame() {
-        ShowGameOver();
+    private void EndGame() {
+        GameOverScreen.Show();
         GameOver = true;
     }
 
-    private void ShowGameOver() {
-        Group.alpha = 1;
-        Group.blocksRaycasts = true;
-    }
-
-    private void HideGameOver() {
-        Group.alpha = 0;
-        Group.blocksRaycasts = false;
+    private void SpawnPlayer() {
+        Instantiate(PlayerPrefab);
     }
 
     // Static methods
@@ -110,10 +92,35 @@ public class Director : MonoBehaviour
 
     public static void RoundFinished() {
         Singleton.round++;
-        Singleton.NewRound();
+        Singleton.NewRoundInterlude();
     }
 
-    public static void NewGame() {
-        Singleton.NewRound();
+    public static void DeleteEnemiesAndPickups() {
+        foreach (GameObject g in GameObject.FindGameObjectsWithTag("Enemy")) Destroy(g);
+        foreach (GameObject g in GameObject.FindGameObjectsWithTag("Pickup")) Destroy(g);
+    }
+
+    public static void ReturnToMenu() {
+        DeleteEnemiesAndPickups();
+
+        MainMenu.ShowMenu();
+        Spawner.StopSpawning();
+        Destroy(Player.GetPlayer().gameObject);
+    }
+
+    public static void NewGame(int Difficulty) {
+        float DifficultyModifier = 1;
+
+        switch (Difficulty) {
+            case 0: DifficultyModifier = 1.0f; break;
+            case 1: DifficultyModifier = 2.0f; break;
+            case 2: DifficultyModifier = 3.0f; break;
+        }
+
+        Spawner.SetDifficultyModifier(DifficultyModifier);
+        Spawner.ResetSpawner();
+
+        Singleton.SpawnPlayer();
+        Singleton.NewRoundInterlude();
     }
 }

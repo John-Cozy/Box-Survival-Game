@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour {
+
     public float MoveVelocity = 0.02f;
     public float DeathTime = 5f;
 

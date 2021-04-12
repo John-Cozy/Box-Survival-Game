@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 884617197416513364}
   - component: {fileID: 44166434200207408}
   m_Layer: 0
-  m_Name: Fire Rate
+  m_Name: Machine Gun
   m_TagString: Pickup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -113,3 +113,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PickupType: Machine Gun
+  Renderer: {fileID: 884617197416513363}

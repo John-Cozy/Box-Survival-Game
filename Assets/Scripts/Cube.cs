@@ -15,8 +15,7 @@ public class Cube : MonoBehaviour {
 
     protected int health;
 
-    // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
         health = MaxHealth;
     }
