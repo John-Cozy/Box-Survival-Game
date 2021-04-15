@@ -42,8 +42,8 @@ public class Director : MonoBehaviour {
     private void UpdateStatistics() {
         UpdateFPS();
 
-        Statistics.GetComponent<Text>().text = "FPS:  " + FPS +
-            "\nMemory   Usage:   " + (int)(Profiler.GetTotalAllocatedMemoryLong() / 1e+6) + "MB" +
+        Statistics.GetComponent<Text>().text = "FPS:  " + (int) FPS +
+            "\nMemory   Usage:   " + ((int) (Profiler.GetTotalAllocatedMemoryLong() / 1e+6)) + "MB" +
             "\nEnemy   Number:   " + GameObject.FindGameObjectsWithTag("Enemy").Length +
             "\nPlayer   Health:  " + Player.GetPlayer().GetComponent<Player>().Health + "/" + Player.GetPlayer().GetComponent<Player>().MaxHealth +
             "\nGodMode:   " + (Player.GetPlayer().GetComponent<Player>().godMode ? "Enabled" : "Disabled");
