@@ -1,19 +1,26 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Profiling;
 
 public class Director : MonoBehaviour {
 
     public GameObject PlayerPrefab;
-    public GameObject RoundText;
-
-    public Text Score;
+    public GameObject Round;
+    public GameObject Score;
+    public GameObject Statistics;
 
     public UIGroup GameOverScreen;
 
     public int PlayerScore = 0;
-    public bool GameOver = false;
 
+    private bool GameOver = false;
+    private bool GameScreenVisible = false;
+    private bool StatisticsVisible = false;
+    
+    private float FPS;
+    private float FPSReload;
+    private float FPSReloadIncrement = 0.25f;
     private int round = 1;
 
     private static Director Singleton;
@@ -24,40 +31,77 @@ public class Director : MonoBehaviour {
 
     private void Update() {
         if (Input.GetKeyDown(KeyCode.Space) && GameOver) {
-            Player.GetPlayer().ResetPlayer();
+            ResetGame();
+        } else if (Input.GetKeyDown(KeyCode.K) && GameScreenVisible) {
+            ToggleStatistic();
+        }
 
-            DeleteEnemiesAndPickups();
+        if (StatisticsVisible) UpdateStatistics();
+    }
 
-            GameOver = false;
-            GameOverScreen.Hide();
+    private void UpdateStatistics() {
+        UpdateFPS();
 
-            PlayerScore = 0;
-            UpdateScore();
+        Statistics.GetComponent<Text>().text = "FPS:  " + FPS +
+            "\nMemory   Usage:   " + (int)(Profiler.GetTotalAllocatedMemoryLong() / 1e+6) + "MB" +
+            "\nEnemy   Number:   " + GameObject.FindGameObjectsWithTag("Enemy").Length +
+            "\nPlayer   Health:  " + Player.GetPlayer().GetComponent<Player>().Health + "/" + Player.GetPlayer().GetComponent<Player>().MaxHealth +
+            "\nGodMode:   " + (Player.GetPlayer().GetComponent<Player>().godMode ? "Enabled" : "Disabled");
+    }
 
-            round = 1;
+    private void UpdateFPS() {
+        FPSReload += Time.deltaTime;
 
-            Spawner.ResetSpawner();
-            NewRoundInterlude();
+        if (FPSReload > FPSReloadIncrement) {
+            FPS = 1f / Time.deltaTime;
+            FPSReload = 0;
         }
     }
 
+    private void ToggleStatistic() {
+        if (StatisticsVisible) {
+            Statistics.GetComponent<UIGroup>().Hide();
+            StatisticsVisible = false;
+        } else {
+            Statistics.GetComponent<UIGroup>().Show();
+            StatisticsVisible = true;
+        }
+    }
+
+    private void ResetGame() {
+        Player.GetPlayer().ResetPlayer();
+
+        DeleteEnemiesAndPickups();
+
+        GameOver = false;
+        GameOverScreen.Hide();
+
+        PlayerScore = 0;
+        UpdateScore();
+
+        round = 1;
+
+        Spawner.ResetSpawner();
+        NewRoundInterlude();
+    }
+
     public void UpdateScore() {
-        Score.text = "Score: " + PlayerScore;
+        Score.GetComponent<Text>().text = "Score: " + PlayerScore;
     }
 
     public void NewRoundInterlude() {
-        RoundText.GetComponent<Text>().text = round % 5 == 0 ? "Boss Round" : ("Round " + round);
-        RoundText.GetComponent<UIGroup>().Show();
+        Round.GetComponent<Text>().text = round % 5 == 0 ? "Boss Round" : ("Round " + round);
+        Round.GetComponent<UIGroup>().Show();
 
         StartCoroutine(NewRound());
     }
 
     IEnumerator NewRound() {
         yield return new WaitForSeconds(2);
-        RoundText.GetComponent<UIGroup>().Hide();
+        Round.GetComponent<UIGroup>().Hide();
 
         bool bossRound = round % 5 == 0;
-        Spawner.NewRound(bossRound);
+        if (GameScreenVisible) Spawner.NewRound(bossRound);
     }
 
     private void EndGame() {
@@ -103,6 +147,13 @@ public class Director : MonoBehaviour {
 
         MainMenu.ShowMenu();
         Spawner.StopSpawning();
+
+        Singleton.StatisticsVisible = false;
+        Singleton.GameScreenVisible = false;
+        Singleton.Statistics.GetComponent<UIGroup>().Hide();
+        Singleton.Score.GetComponent<UIGroup>().Hide();
+        Singleton.GameOverScreen.Hide();
+
         Destroy(Player.GetPlayer().gameObject);
     }
 
@@ -119,8 +170,11 @@ public class Director : MonoBehaviour {
         Spawner.ResetSpawner();
 
         Singleton.round = 1;
+        Singleton.Score.GetComponent<UIGroup>().Show();
 
         Singleton.SpawnPlayer();
         Singleton.NewRoundInterlude();
+
+        Singleton.GameScreenVisible = true;
     }
 }

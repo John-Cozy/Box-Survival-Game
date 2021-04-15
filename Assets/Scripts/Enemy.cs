@@ -11,8 +11,8 @@ public class Enemy : Cube {
 
     private Transform PlayerPosition;
 
-    void Start() {
-        health = MaxHealth;
+    private new void Start() {
+        base.Start();
         PlayerPosition = Player.GetPlayer().transform;
     }
 
@@ -22,11 +22,11 @@ public class Enemy : Cube {
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.CompareTag("Bullet")) {
-            health--;
+            Health--;
 
             Destroy(collision.gameObject);
 
-            if (health == 0) {
+            if (Health == 0) {
                 AudioManager.Play(DeadAudio);
                 Director.AddToScore(ScoreValue);
 

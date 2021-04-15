@@ -13,14 +13,14 @@ public class Cube : MonoBehaviour {
 
     public string HitAudio, DeadAudio;
 
-    protected int health;
+    public int Health;
 
     protected void Start()
     {
-        health = MaxHealth;
+        Health = MaxHealth;
     }
 
     protected void UpdateColour() {
-        SpriteRenderer.color = Color.Lerp(DeadColour, InitialColour, (float) health / MaxHealth);
+        SpriteRenderer.color = Color.Lerp(DeadColour, InitialColour, (float) Health / MaxHealth);
     }
 }

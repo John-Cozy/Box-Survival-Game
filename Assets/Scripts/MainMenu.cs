@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class MainMenu : UIGroup {
 
     public Text DifficultyText;
+    public Slider Volume;
     private int Difficulty = 1;
 
     private static MainMenu Singleton;
@@ -13,18 +14,23 @@ public class MainMenu : UIGroup {
     }
 
     public void StartGame() {
+        AudioManager.SetSounds(Volume.value);
         AudioManager.Play("Menu");
+
         Hide();
         Director.NewGame(Difficulty);
     }
 
     public void StartTutorial() {
+        AudioManager.SetSounds(Volume.value);
         AudioManager.Play("Menu");
         Hide();
         Tutorial.BeginTutorial();
     }
 
     public void CycleDifficulty() {
+        AudioManager.SetSounds(Volume.value);
+
         switch (Difficulty) {
             case 0:
                 Difficulty++;

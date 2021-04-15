@@ -28,12 +28,14 @@ public class AudioManager : MonoBehaviour
     void Awake()
     {
         singleton = this;
+    }
 
-        foreach (Sound s in Sounds) {
-            s.Source        = gameObject.AddComponent<AudioSource>();
-            s.Source.clip   = s.Clip;
-            s.Source.volume = s.Volume;
-            s.Source.pitch  = s.Pitch;
+    public static void SetSounds(float volume) {
+        foreach (Sound s in singleton.Sounds) {
+            s.Source = singleton.gameObject.AddComponent<AudioSource>();
+            s.Source.clip = s.Clip;
+            s.Source.volume = s.Volume * volume;
+            s.Source.pitch = s.Pitch;
         }
     }
 

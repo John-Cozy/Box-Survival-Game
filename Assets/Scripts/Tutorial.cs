@@ -11,11 +11,13 @@ public class Tutorial : UIGroup {
     public Text S;
     public Text D;
     public Text G;
+    public Text K;
     public Text ESC;
     public Text LeftClick;
     
     public UIGroup ShootPrompt;
     public UIGroup PickupPrompt;
+    public UIGroup StatsPrompt;
 
     private bool TutorialEnabled = false;
     private bool g1, g2;
@@ -36,6 +38,10 @@ public class Tutorial : UIGroup {
             if (Input.GetKeyDown(KeyCode.A)) ChangeColour(A, Color.green);
             if (Input.GetKeyDown(KeyCode.S)) ChangeColour(S, Color.green);
             if (Input.GetKeyDown(KeyCode.D)) ChangeColour(D, Color.green);
+            if (Input.GetKeyDown(KeyCode.K)) { 
+                ChangeColour(K, Color.green);
+                StatsPrompt.Show();
+            }
             if (Input.GetKeyDown(KeyCode.G)) {
                 if (!g1) {
                     ChangeColour(G, Color.red);
@@ -67,6 +73,7 @@ public class Tutorial : UIGroup {
         Hide();
         MainMenu.ShowMenu();
         PickupPrompt.Hide();
+        StatsPrompt.Hide();
 
         PickupPost.GetComponent<PickupPost>().SelfDestruct();
         Destroy(Player);

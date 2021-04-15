@@ -12,7 +12,7 @@ public class PickupPost : MonoBehaviour {
 
     private void Start() {
         Renderer = GetComponent<SpriteRenderer>();
-        VisiblePickups = new GameObject[3];
+        VisiblePickups = new GameObject[GunPickups.Length];
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
@@ -39,7 +39,7 @@ public class PickupPost : MonoBehaviour {
     }
 
     private void InstantiatePickups() {
-        Vector2 position = new Vector2(6, 0);
+        Vector2 position = new Vector2(6, 1);
 
         for (int i = 0; i < GunPickups.Length; i++) {
             if (VisiblePickups[i]) Destroy(VisiblePickups[i]);

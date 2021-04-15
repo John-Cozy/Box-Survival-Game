@@ -7,7 +7,7 @@ public class Player : Cube {
     public Gun Gun;
 
     public bool IsDead = false;
-    private bool godMode = false;
+    public bool godMode = false;
 
     private static Player Singleton;
 
@@ -53,7 +53,7 @@ public class Player : Cube {
 
     public void ResetPlayer() {
         IsDead = false;
-        health = MaxHealth;
+        Health = MaxHealth;
         SpriteRenderer.color = Color.white;
         transform.position = new Vector3(0, 0, 0);
         Gun.ChangeGun(0);
@@ -64,14 +64,14 @@ public class Player : Cube {
             if (IsDead) {
                 AudioManager.Play("DeadHit");
             } else {
-                health--;
+                Health--;
 
                 UpdateColour();
 
-                if (health > 0) {
+                if (Health > 0) {
                     AudioManager.Play(HitAudio);
                     PickupManager.EnableHealthPickups();
-                } else if (health == 0) {
+                } else if (Health == 0) {
                     AudioManager.Play(DeadAudio);
                     PickupManager.DisableHealthPickups();
                     
@@ -96,12 +96,12 @@ public class Player : Cube {
                     Gun.ChangeGun(3);
                     break;
                 case "Health":
-                    if (health != MaxHealth) {
-                        health++;
+                    if (Health != MaxHealth) {
+                        Health++;
 
                         if (!godMode) UpdateColour();
 
-                        if (health == MaxHealth) {
+                        if (Health == MaxHealth) {
                             PickupManager.DisableHealthPickups();
                         }
                     }
